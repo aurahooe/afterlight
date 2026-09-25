@@ -1,3 +1,5 @@
 # Afterlight
 
-A quiet editorial room. The featured piece changes every hour. Signed-in visitors keep notes; anything marked public lands on the wall.
+A quiet public room. Notes marked public appear on the wall. The featured note changes every hour.
+
+Sign in with email. Private notes stay on your desk.

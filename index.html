@@ -4,74 +4,87 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Afterlight</title>
-  <meta name="description" content="A quiet room that changes every hour." />
+  <meta name="description" content="A small public room that changes on the hour. Leave a note. Keep it private, or put it on the wall." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Source+Sans+3:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,560;0,9..144,640;1,9..144,400;1,9..144,560&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
   <div class="grain" aria-hidden="true"></div>
-  <header class="top">
-    <a class="mark" href="/">Afterlight</a>
-    <nav>
-      <button type="button" data-go="wall">The wall</button>
-      <button type="button" data-go="desk">Your desk</button>
-      <button type="button" id="authBtn">Sign in</button>
+  <div class="wash" aria-hidden="true"></div>
+
+  <header class="mast">
+    <a class="wordmark" href="#home" data-nav="home">Afterlight</a>
+    <nav class="nav">
+      <button type="button" data-nav="home">This hour</button>
+      <button type="button" data-nav="wall">The wall</button>
+      <button type="button" data-nav="desk">Desk</button>
     </nav>
+    <button type="button" class="auth-chip" id="authChip">Sign in</button>
   </header>
 
   <main>
-    <section id="view-home" class="view active">
-      <p class="kicker" id="kicker">This hour</p>
-      <h1 id="featureTitle">The lamp is still warm</h1>
-      <p class="lede" id="featureBody"></p>
-      <p class="meta" id="featureMeta"></p>
-      <div class="hourbar">
-        <div class="hourfill" id="hourFill"></div>
+    <section id="view-home" class="pane is-on">
+      <p class="eyebrow" id="hourLabel">This hour</p>
+      <h1 class="feature-title" id="featureTitle">The room is still settling.</h1>
+      <p class="feature-body" id="featureBody">Public notes rotate here when the clock turns. Until then, the lamp stays on.</p>
+      <p class="feature-by" id="featureBy"></p>
+      <div class="meter" role="progressbar" aria-label="Time left in this hour">
+        <span class="meter-fill" id="meterFill"></span>
       </div>
-      <p class="tick" id="tick"></p>
+      <p class="meter-copy" id="meterCopy">Turning over soon</p>
     </section>
 
-    <section id="view-wall" class="view">
-      <h2>Public notes</h2>
-      <p class="sub">Anything a visitor marked public sits here. Private notes stay on their desk.</p>
-      <div id="wallList" class="cards"></div>
+    <section id="view-wall" class="pane">
+      <div class="pane-head">
+        <h2>The wall</h2>
+        <p>Only notes marked public. Private ones never leave a desk.</p>
+      </div>
+      <div id="wallGrid" class="grid"></div>
     </section>
 
-    <section id="view-desk" class="view">
-      <h2>Your desk</h2>
-      <p class="sub" id="deskHint">Sign in to keep notes. Public ones appear on the wall.</p>
-      <form id="noteForm" class="sheet hidden">
-        <input name="title" maxlength="80" placeholder="A short title" required />
-        <textarea name="body" rows="6" maxlength="2000" placeholder="Leave something for later, or for the room." required></textarea>
-        <label class="check">
-          <input type="checkbox" name="is_public" />
-          Show this on the public wall
-        </label>
-        <button type="submit">Save note</button>
+    <section id="view-desk" class="pane">
+      <div class="pane-head">
+        <h2>Desk</h2>
+        <p id="deskCopy">Sign in to keep notes. Tick public if you want them on the wall.</p>
+      </div>
+      <form id="compose" class="compose is-hidden">
+        <input name="title" maxlength="90" placeholder="Title, if it needs one" />
+        <textarea name="body" rows="7" maxlength="4000" required placeholder="Write something you would not mind finding again."></textarea>
+        <div class="compose-row">
+          <label class="toggle">
+            <input type="checkbox" name="is_public" />
+            <span>Show on the public wall</span>
+          </label>
+          <button type="submit">Keep this</button>
+        </div>
       </form>
-      <div id="deskList" class="cards"></div>
+      <div id="deskGrid" class="grid"></div>
     </section>
 
-    <section id="view-auth" class="view">
-      <h2 id="authTitle">Sign in</h2>
-      <form id="authForm" class="sheet">
-        <input type="email" name="email" placeholder="Email" required />
-        <input type="password" name="password" placeholder="Password" minlength="6" required />
-        <button type="submit">Continue</button>
+    <section id="view-auth" class="pane">
+      <div class="pane-head">
+        <h2 id="authHeading">Sign in</h2>
+        <p>Email and a password. Notes stay on this project’s database.</p>
+      </div>
+      <form id="authForm" class="compose">
+        <input type="email" name="email" autocomplete="email" placeholder="Email" required />
+        <input type="password" name="password" autocomplete="current-password" minlength="6" placeholder="Password" required />
+        <input type="text" name="handle" id="handleField" class="is-hidden" maxlength="24" placeholder="Handle (letters, numbers)" />
+        <button type="submit" id="authSubmit">Enter</button>
       </form>
-      <button type="button" class="ghost" id="toggleMode">Need an account? Create one</button>
-      <p class="msg" id="authMsg"></p>
+      <button type="button" class="text-btn" id="authFlip">Need a desk? Create one</button>
+      <p class="notice" id="authNotice"></p>
     </section>
   </main>
 
-  <footer>
-    <span>The room turns over on the hour.</span>
-    <span id="who"></span>
+  <footer class="colophon">
+    <span>Turns over every hour, on the hour.</span>
+    <span id="signedAs"></span>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.47.10"></script>
   <script src="./app.js"></script>
 </body>
 </html>
